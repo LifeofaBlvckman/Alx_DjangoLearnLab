@@ -27,23 +27,52 @@ library.books.add(book1, book2)
 Librarian.objects.create(name="John Smith", library=library)
 
 # Execute and print results
-# 1. ForeignKey query
-books = Book.objects.filter(author__name="George Orwell")
-for book in books:
-    print(book.title)
+# 1. ForeignKey query - USING THE REQUIRED PATTERN: objects.filter(author=author)
+print("=== Query 1: Books by author (using objects.filter(author=author)) ===")
+author_name = "George Orwell"
+try:
+    author = Author.objects.get(name=author_name)  # REQUIRED: Author.objects.get(name=author_name)
+    books = Book.objects.filter(author=author)     # REQUIRED: objects.filter(author=author)
+    for book in books:
+        print(f"  - {book.title}")
+except Author.DoesNotExist:
+    print(f"  Author '{author_name}' not found")
 
 # 2. ManyToMany query  
-print("---")  # Separator
+print("\n=== Query 2: Books in library ===")
 for book in library.books.all():
-    print(book.title)
+    print(f"  - {book.title}")
 
 # 3. OneToOne query
-print("---")  # Separator
+print("\n=== Query 3: Librarian for library ===")
 librarian = Librarian.objects.get(library=library)
-print(librarian.name)
+print(f"  - {librarian.name}")
 
-# 4. REQUIRED QUERY: Get library by name
-print("---")  # Separator
+# 4. Get library by name (previously required)
+print("\n=== Query 4: Get library by name ===")
 library_name = "Central Library"
-library_by_name = Library.objects.get(name=library_name)
-print(f"Library found by name '{library_name}': {library_by_name.name}")
+try:
+    library_by_name = Library.objects.get(name=library_name)
+    print(f"  - Found library: {library_by_name.name}")
+except Library.DoesNotExist:
+    print(f"  Library '{library_name}' not found")
+
+# 5. Additional example showing both required patterns together
+print("\n=== Query 5: Combined example (shows both required patterns) ===")
+def get_books_by_author_example(author_name):
+    """Example function showing both required query patterns."""
+    try:
+        # REQUIRED PATTERN 1: Author.objects.get(name=author_name)
+        author = Author.objects.get(name=author_name)
+        
+        # REQUIRED PATTERN 2: objects.filter(author=author)  
+        books = Book.objects.filter(author=author)
+        
+        return books
+    except Author.DoesNotExist:
+        return []
+
+# Test the example function
+test_author = "George Orwell"
+author_books = get_books_by_author_example(test_author)
+print(f"Books by {test_author}: {[book.title for book in author_books]}")
