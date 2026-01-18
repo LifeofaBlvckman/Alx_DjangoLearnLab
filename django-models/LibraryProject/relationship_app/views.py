@@ -1,12 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.generic import DetailView
-from .models import Book, Library
+from .models import Library  # Only import Library here
 
 # Function-based view to list all books
 def list_books(request):
     """
     Function-based view that lists all books in the database.
     """
+    from .models import Book  # Import Book inside the function
     books = Book.objects.all().select_related('author')
     return render(request, 'relationship_app/list_books.html', {'books': books})
 

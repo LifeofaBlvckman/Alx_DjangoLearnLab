@@ -3,33 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>List of Books</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        ul { list-style-type: none; padding: 0; }
-        li { padding: 8px; margin: 5px 0; background: #f4f4f4; border-radius: 4px; }
-    </style>
 </head>
 <body>
     <h1>Books Available:</h1>
-    {% if books %}
     <ul>
         {% for book in books %}
         <li>{{ book.title }} by {{ book.author.name }}</li>
         {% endfor %}
-    </ul>
-    {% else %}
-    <p>No books available in the database.</p>
-    <p>Please add some books through the admin interface or Django shell.</p>
-    {% endif %}
-    <hr>
-    <p><strong>Testing URLs:</strong></p>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/books/">This page (Function-based View)</a></li>
-        <li><a href="/library/1/">Library 1 Details (Class-based View)</a></li>
-        <li><a href="/library/2/">Library 2 Details (Class-based View)</a></li>
-        <li><a href="/admin/">Admin Interface</a></li>
     </ul>
 </body>
 </html>
