@@ -2,6 +2,10 @@
 *.pyc
 __pycache__/
 
+# Django migrations (except __init__.py)
+*/migrations/*.py
+!*/migrations/__init__.py
+
 # Django
 db.sqlite3
 *.log
