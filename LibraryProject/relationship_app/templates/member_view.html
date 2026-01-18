@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Member Dashboard{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="display-5">👤 Member Dashboard</h1>
+    <div class="alert alert-success">
+        <h4 class="alert-heading">Member Access Level</h4>
+        <p>Welcome to your personal library dashboard.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">My Library</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">🔍 Browse Available Books</li>
+                    <li class="list-group-item">📚 View Borrowed Books</li>
+                    <li class="list-group-item">⏰ Check Due Dates</li>
+                    <li class="list-group-item">⭐ My Favorites</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success">Search Books</button>
+                    <button class="btn btn-outline-success">View Borrowing History</button>
+                    <button class="btn btn-outline-success">Update Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5>Member Information:</h5>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Role:</strong> <span class="badge bg-success">{{ role }}</span></p>
+        <p><strong>Access:</strong> Basic Library Features</p>
+    </div>
+</div>
+{% endblock %}
