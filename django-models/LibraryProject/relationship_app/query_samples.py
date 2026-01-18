@@ -41,3 +41,9 @@ for book in library.books.all():
 print("---")  # Separator
 librarian = Librarian.objects.get(library=library)
 print(librarian.name)
+
+# 4. REQUIRED QUERY: Get library by name
+print("---")  # Separator
+library_name = "Central Library"
+library_by_name = Library.objects.get(name=library_name)
+print(f"Library found by name '{library_name}': {library_by_name.name}")
