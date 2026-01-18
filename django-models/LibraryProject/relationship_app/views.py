@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from django.views.generic.detail import DetailView  # Changed to exact import
-from .models import Library  # Only Library import
+from django.views.generic.detail import DetailView
+from .models import Library
 
 # Function-based view to list all books
 def list_books(request):
     """
     Function-based view that lists all books in the database.
     """
-    from .models import Book  # Import Book inside function
+    from .models import Book
     books = Book.objects.all().select_related('author')
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
