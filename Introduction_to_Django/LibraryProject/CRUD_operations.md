@@ -1,41 +1,55 @@
 # Django ORM CRUD Operations for Book Model
 
-## 1. Create
+## CREATE Operation
 ```python
 from bookshelf.models import Book
-
-book = Book.objects.create(
-    title="1984",
-    author="George Orwell",
-    publication_year=1949
-)
+book = Book.objects.create(title="1984", author="George Orwell", publication_year=1949)
 print(book)
 ```
-**Output:** `1984 by George Orwell (1949)`
 
-## 2. Retrieve
+**Output:**
+```
+<Book: 1984 by George Orwell (1949)>
+```
+
+## RETRIEVE Operation
 ```python
 book = Book.objects.get(title="1984")
-print(f"{book.title}, {book.author}, {book.publication_year}")
+print(f"Title: {book.title}")
+print(f"Author: {book.author}")
+print(f"Publication Year: {book.publication_year}")
 ```
-**Output:** `1984, George Orwell, 1949`
 
-## 3. Update
+**Output:**
+```
+Title: 1984
+Author: George Orwell
+Publication Year: 1949
+```
+
+## UPDATE Operation
 ```python
 book = Book.objects.get(title="1984")
 book.title = "Nineteen Eighty-Four"
 book.save()
-print(book.title)
+print(f"Updated title: {book.title}")
 ```
-**Output:** `Nineteen Eighty-Four`
 
-## 4. Delete
+**Output:**
+```
+Updated title: Nineteen Eighty-Four
+```
+
+## DELETE Operation
 ```python
 book = Book.objects.get(title="Nineteen Eighty-Four")
 book.delete()
-print(Book.objects.all().count())
+# Confirm deletion
+all_books = Book.objects.all()
+print(f"Books in database: {all_books}")
 ```
-**Output:** `0`
 
-## Summary
-Successfully implemented all CRUD operations.
+**Output:**
+```
+Books in database: <QuerySet []>
+```
