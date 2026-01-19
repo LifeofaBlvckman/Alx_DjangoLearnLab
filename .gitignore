@@ -1,6 +1,16 @@
+# Python
+*.pyc
+__pycache__/
 
 # Django migrations (except __init__.py)
 */migrations/*.py
 !*/migrations/__init__.py
-__pycache__/
-*.pyc
+
+# Django
+db.sqlite3
+*.log
+/staticfiles/
+media/
+
+# Virtual environment
+venv/
