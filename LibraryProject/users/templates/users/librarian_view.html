@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Librarian Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #3498db; color: white; padding: 20px; border-radius: 5px; }
+        .content { background: #ecf0f1; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        .role-badge { 
+            background: #2980b9; 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        .librarian-features { 
+            background: white; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Librarian Dashboard</h1>
+        <p>Welcome, {{ user.username }}! <span class="role-badge">{{ role }}</span></p>
+    </div>
+    
+    <div class="content">
+        <h2>Librarian Tools</h2>
+        
+        <div class="librarian-features">
+            <h3>📚 Book Management</h3>
+            <ul>
+                <li>Add new books to the library catalog</li>
+                <li>Edit book information and details</li>
+                <li>Remove books from circulation</li>
+                <li>Manage book categories and genres</li>
+            </ul>
+        </div>
+        
+        <div class="librarian-features">
+            <h3>👥 Member Services</h3>
+            <ul>
+                <li>Check books in and out for members</li>
+                <li>Process book reservations</li>
+                <li>Manage overdue books and fines</li>
+                <li>Assist members with book searches</li>
+            </ul>
+        </div>
+        
+        <div class="librarian-features">
+            <h3>📊 Library Operations</h3>
+            <ul>
+                <li>Track book inventory and availability</li>
+                <li>Generate borrowing reports</li>
+                <li>Manage library events and programs</li>
+                <li>Maintain reading room秩序</li>
+            </ul>
+        </div>
+        
+        <p><a href="/users/dashboard/">Back to Dashboard</a></p>
+    </div>
+</body>
+</html>

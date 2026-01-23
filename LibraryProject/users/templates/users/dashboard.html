@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #9b59b6; color: white; padding: 20px; border-radius: 5px; }
+        .content { background: #ecf0f1; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        .role-badge { 
+            background: #8e44ad; 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        .role-links { 
+            display: flex; 
+            gap: 10px; 
+            margin: 20px 0;
+        }
+        .role-link { 
+            background: #3498db; 
+            color: white; 
+            padding: 10px 15px; 
+            text-decoration: none; 
+            border-radius: 5px;
+        }
+        .role-link.admin { background: #e74c3c; }
+        .role-link.librarian { background: #3498db; }
+        .role-link.member { background: #27ae60; }
+        .role-link:hover { opacity: 0.9; }
+        .info-box { 
+            background: white; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 4px solid #9b59b6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>User Dashboard</h1>
+        <p>Welcome, {{ user.username }}! <span class="role-badge">{{ role }}</span></p>
+    </div>
+    
+    <div class="content">
+        <h2>Role-Based Access</h2>
+        <p>Your current role: <strong>{{ role }}</strong></p>
+        
+        <div class="role-links">
+            {% if role == 'Admin' or role == 'Librarian' or role == 'Member' %}
+                <a href="/users/admin/" class="role-link admin">Admin View</a>
+            {% endif %}
+            {% if role == 'Librarian' or role == 'Member' %}
+                <a href="/users/librarian/" class="role-link librarian">Librarian View</a>
+            {% endif %}
+            <a href="/users/member/" class="role-link member">Member View</a>
+        </div>
+        
+        <div class="info-box">
+            <h3>About Your Role</h3>
+            {% if role == 'Admin' %}
+                <p>As an <strong>Admin</strong>, you have full system access including user management, system configuration, and oversight of all library operations.</p>
+            {% elif role == 'Librarian' %}
+                <p>As a <strong>Librarian</strong>, you can manage books, assist members, and handle library operations.</p>
+            {% elif role == 'Member' %}
+                <p>As a <strong>Member</strong>, you can browse, borrow, and reserve books from the library.</p>
+            {% endif %}
+        </div>
+        
+        <div class="info-box">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/books/">Browse All Books</a></li>
+                <li><a href="/library/5/">View Library Details</a></li>
+                <li><a href="/admin/">Admin Panel</a> (if you have admin access)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

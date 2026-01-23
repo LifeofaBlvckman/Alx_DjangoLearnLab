@@ -1,23 +1,40 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
+from .decorators import admin_required, librarian_required, member_required
 
-def is_admin(user):
-    return user.userprofile.role == 'Admin'
-
-def is_librarian(user):
-    return user.userprofile.role == 'Librarian'
-
-def is_member(user):
-    return user.userprofile.role == 'Member'
-
-@user_passes_test(is_admin)
+@admin_required
 def admin_view(request):
-    return render(request, 'admin_view.html')
+    """View accessible only to users with Admin role"""
+    context = {
+        'user': request.user,
+        'role': request.user.profile.role,
+    }
+    return render(request, 'users/admin_view.html', context)
 
-@user_passes_test(is_librarian)
+@librarian_required
 def librarian_view(request):
-    return render(request, 'librarian_view.html')
+    """View accessible only to users with Librarian role"""
+    context = {
+        'user': request.user,
+        'role': request.user.profile.role,
+    }
+    return render(request, 'users/librarian_view.html', context)
 
-@user_passes_test(is_member)
+@member_required
 def member_view(request):
-    return render(request, 'member_view.html')
+    """View accessible only to users with Member role"""
+    context = {
+        'user': request.user,
+        'role': request.user.profile.role,
+    }
+    return render(request, 'users/member_view.html', context)
+
+# Optional: Dashboard view that shows different content based on role
+@login_required
+def dashboard(request):
+    """Dashboard view that adapts based on user role"""
+    context = {
+        'user': request.user,
+        'role': request.user.profile.role,
+    }
+    return render(request, 'users/dashboard.html', context)
