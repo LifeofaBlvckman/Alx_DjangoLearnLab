@@ -1,16 +1,28 @@
 from django.contrib import admin
-from .models import UserProfile
+from .models import Author, Book, Library, Librarian
 
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'get_username', 'get_email')
-    list_filter = ('role',)
-    search_fields = ('user__username', 'user__email')
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author')
+    list_filter = ('author',)
+    search_fields = ('title', 'author__name')
+
+@admin.register(Library)
+class LibraryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'book_count')
+    filter_horizontal = ('books',)
+    search_fields = ('name',)
     
-    def get_username(self, obj):
-        return obj.user.username
-    get_username.short_description = 'Username'
-    
-    def get_email(self, obj):
-        return obj.user.email
-    get_email.short_description = 'Email'
+    def book_count(self, obj):
+        return obj.books.count()
+    book_count.short_description = 'Number of Books'
+
+@admin.register(Librarian)
+class LibrarianAdmin(admin.ModelAdmin):
+    list_display = ('name', 'library')
+    search_fields = ('name', 'library__name')
