@@ -4,10 +4,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class UserProfile(models.Model):
-    """Extended user model with role-based access control"""
+    """Extended user profile with role field"""
     
     ROLE_CHOICES = [
-        ('Admin', 'Admin'),
+        ('Admin', 'Administrator'),
         ('Librarian', 'Librarian'),
         ('Member', 'Member'),
     ]
@@ -18,25 +18,28 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
     
+    @property
     def is_admin(self):
         return self.role == 'Admin'
     
+    @property
     def is_librarian(self):
         return self.role == 'Librarian'
     
+    @property
     def is_member(self):
         return self.role == 'Member'
 
-# Signal to automatically create UserProfile when a new User is created
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    """Automatically create UserProfile when a new User is created"""
     if created:
         UserProfile.objects.create(user=instance)
 
-# Signal to save UserProfile when User is saved
+
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    """Save UserProfile when User is saved"""
     if hasattr(instance, 'profile'):
         instance.profile.save()
-    else:
-        UserProfile.objects.create(user=instance)

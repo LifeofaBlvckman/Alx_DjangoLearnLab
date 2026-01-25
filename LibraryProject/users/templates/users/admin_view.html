@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 5px; }
+        .content { background: #ecf0f1; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        .role-badge { 
+            background: #e74c3c; 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        .admin-features { 
+            background: white; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 4px solid #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome, {{ user.username }}! <span class="role-badge">{{ role }}</span></p>
+    </div>
+    
+    <div class="content">
+        <h2>Administrator Features</h2>
+        
+        <div class="admin-features">
+            <h3>📊 System Management</h3>
+            <ul>
+                <li>Manage all user accounts and permissions</li>
+                <li>Configure system settings</li>
+                <li>View system logs and analytics</li>
+                <li>Backup and restore database</li>
+            </ul>
+        </div>
+        
+        <div class="admin-features">
+            <h3>👥 User Management</h3>
+            <ul>
+                <li>Create, edit, and delete user accounts</li>
+                <li>Assign roles (Admin, Librarian, Member)</li>
+                <li>Reset user passwords</li>
+                <li>Monitor user activity</li>
+            </ul>
+        </div>
+        
+        <div class="admin-features">
+            <h3>📚 Library Oversight</h3>
+            <ul>
+                <li>Manage all libraries in the system</li>
+                <li>Approve new book additions</li>
+                <li>Generate reports and statistics</li>
+                <li>Set borrowing policies and rules</li>
+            </ul>
+        </div>
+        
+        <p><a href="/users/dashboard/">Back to Dashboard</a></p>
+    </div>
+</body>
+</html>

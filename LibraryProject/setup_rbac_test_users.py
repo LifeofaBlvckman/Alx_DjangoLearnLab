@@ -1,74 +1,74 @@
 #!/usr/bin/env python3
+"""
+Script to create test users with different roles for RBAC testing.
+"""
 import os
-import django
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'LibraryProject.settings')
+
+import django
 django.setup()
 
 from django.contrib.auth.models import User
-from relationship_app.models import UserProfile, Author, Book, Library, Librarian
+from users.models import UserProfile
 
-print("=== SETTING UP RBAC TEST DATA ===\n")
+def create_test_users():
+    """Create test users with different roles"""
+    
+    # Clear existing test users (but keep superusers)
+    test_users = ['admin_user', 'librarian_user', 'member_user', 'regular_user']
+    User.objects.filter(username__in=test_users).delete()
+    
+    # Create Admin user
+    admin_user = User.objects.create_user(
+        username='admin_user',
+        email='admin@example.com',
+        password='admin123'
+    )
+    admin_profile = admin_user.profile
+    admin_profile.role = 'Admin'
+    admin_profile.save()
+    print(f"✓ Created Admin user: {admin_user.username} (password: admin123)")
+    
+    # Create Librarian user
+    librarian_user = User.objects.create_user(
+        username='librarian_user',
+        email='librarian@example.com',
+        password='librarian123'
+    )
+    librarian_profile = librarian_user.profile
+    librarian_profile.role = 'Librarian'
+    librarian_profile.save()
+    print(f"✓ Created Librarian user: {librarian_user.username} (password: librarian123)")
+    
+    # Create Member user
+    member_user = User.objects.create_user(
+        username='member_user',
+        email='member@example.com',
+        password='member123'
+    )
+    member_profile = member_user.profile
+    member_profile.role = 'Member'
+    member_profile.save()
+    print(f"✓ Created Member user: {member_user.username} (password: member123)")
+    
+    # Create regular user (no specific role - will default to Member)
+    regular_user = User.objects.create_user(
+        username='regular_user',
+        email='regular@example.com',
+        password='regular123'
+    )
+    print(f"✓ Created Regular user: {regular_user.username} (password: regular123)")
+    
+    print("\n=== Test Users Created ===")
+    print("Login URLs (when server is running):")
+    print("1. Admin:      http://localhost:8000/users/admin/")
+    print("2. Librarian:  http://localhost:8000/users/librarian/")
+    print("3. Member:     http://localhost:8000/users/member/")
+    print("4. Dashboard:  http://localhost:8000/users/dashboard/")
+    print("\nNote: You need to be logged in to access these pages.")
 
-# Clear and create fresh data
-print("1. Creating test data...")
-Author.objects.all().delete()
-Book.objects.all().delete()
-Library.objects.all().delete()
-Librarian.objects.all().delete()
-
-# Create library data
-author = Author.objects.create(name="George Orwell")
-book1 = Book.objects.create(title="1984", author=author, publication_year=1949)
-book2 = Book.objects.create(title="Animal Farm", author=author, publication_year=1945)
-
-library = Library.objects.create(name="Central Library")
-library.books.add(book1, book2)
-
-Librarian.objects.create(name="John Smith", library=library)
-print("   ✅ Library data created")
-
-# Create test users with different roles
-print("\n2. Creating test users with roles:")
-users_data = [
-    ('admin_user', 'adminpass123', 'Admin', 'Admin User'),
-    ('librarian_user', 'libpass123', 'Librarian', 'Librarian User'),
-    ('member_user', 'memberpass123', 'Member', 'Member User'),
-    ('regular_user', 'regularpass123', 'Member', 'Regular User'),
-]
-
-for username, password, role, full_name in users_data:
-    if not User.objects.filter(username=username).exists():
-        user = User.objects.create_user(username, f'{username}@example.com', password)
-        user.first_name = full_name.split()[0]
-        user.last_name = full_name.split()[1] if len(full_name.split()) > 1 else ''
-        user.save()
-        
-        # Get or create profile and assign role
-        profile, created = UserProfile.objects.get_or_create(user=user)
-        profile.role = role
-        profile.save()
-        
-        print(f"   ✅ Created {username} with role: {role}")
-    else:
-        # Update existing user's role
-        user = User.objects.get(username=username)
-        profile, created = UserProfile.objects.get_or_create(user=user)
-        profile.role = role
-        profile.save()
-        print(f"   ✅ Updated {username} to role: {role}")
-
-print("\n3. Summary of users created:")
-for user in User.objects.all():
-    profile = UserProfile.objects.get(user=user)
-    print(f"   👤 {user.username:15} | Role: {profile.role:10} | Email: {user.email}")
-
-print("\n=== RBAC TEST DATA SETUP COMPLETE ===")
-print("\nTest credentials:")
-print("  Admin:      admin_user / adminpass123")
-print("  Librarian:  librarian_user / libpass123")
-print("  Member:     member_user / memberpass123")
-print("\nRole-based URLs:")
-print("  Admin:      http://127.0.0.1:8000/admin/dashboard/")
-print("  Librarian:  http://127.0.0.1:8000/librarian/dashboard/")
-print("  Member:     http://127.0.0.1:8000/member/dashboard/")
+if __name__ == "__main__":
+    create_test_users()
