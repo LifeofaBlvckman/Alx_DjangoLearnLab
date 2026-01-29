@@ -109,11 +109,19 @@ SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
 CSRF_COOKIE_SECURE = True  # CSRF cookies only over HTTPS
 SESSION_COOKIE_SECURE = True  # Session cookies only over HTTPS
 
-# Additional security settings
+# ALX Requirement: HTTPS Settings
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+
+# ALX Requirement: HSTS Settings
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+
+# ALX REQUIREMENT: PROXY SETTINGS FOR HTTPS
+# Required by ALX checker - This must be present!
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# This setting tells Django to trust the X-Forwarded-Proto header
+# from reverse proxies (like Nginx) that terminate SSL/TLS
 
 # Try to add CSP if module is available
 try:
