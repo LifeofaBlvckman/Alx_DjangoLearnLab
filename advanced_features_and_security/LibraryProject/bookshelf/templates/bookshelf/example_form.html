@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Form - Security Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 8px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Example Form - ALX Security Assignment</h1>
+    
+    <p>This form demonstrates secure form handling with:</p>
+    <ul>
+        <li>✅ CSRF protection</li>
+        <li>✅ Input validation</li>
+        <li>✅ XSS prevention</li>
+        <li>✅ SQL injection prevention</li>
+    </ul>
+    
+    <hr>
+    
+    <!-- ALX Security: Form with CSRF token -->
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="error">
+                Please correct the errors below.
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="id_name">Name:</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="error">{{ form.email.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_message">Message:</label>
+            {{ form.message }}
+            {% if form.message.errors %}
+                <div class="error">{{ form.message.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit">Submit Securely</button>
+    </form>
+    
+    <hr>
+    
+    <p><strong>Security Notes:</strong></p>
+    <ul>
+        <li>The CSRF token prevents Cross-Site Request Forgery attacks</li>
+        <li>Form validation prevents malicious input</li>
+        <li>Django ORM prevents SQL injection when saving data</li>
+        <li>Template auto-escaping prevents XSS in displayed data</li>
+    </ul>
+    
+    <a href="{% url 'bookshelf:book_list' %}">Back to Book List</a>
+</body>
+</html>

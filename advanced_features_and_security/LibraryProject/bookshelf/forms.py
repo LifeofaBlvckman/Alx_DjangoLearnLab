@@ -25,3 +25,52 @@ class BookForm(forms.ModelForm):
         # Basic sanitization - in production use a proper HTML sanitizer
         description = description.replace('<script>', '').replace('</script>', '')
         return description
+
+
+# ALX REQUIREMENT: Add ExampleForm
+class ExampleForm(forms.Form):
+    """Example form for ALX security assignment"""
+    name = forms.CharField(
+        max_length=100,
+        label='Your Name',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    email = forms.EmailField(
+        label='Email Address',
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    message = forms.CharField(
+        label='Message',
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4})
+    )
+    
+    def clean(self):
+        """Example of security validation"""
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        
+        # Security: Prevent potential XSS in name field
+        if name and '<script>' in name.lower():
+            raise forms.ValidationError("Invalid characters in name field")
+        
+        return cleaned_data
+
+
+# ALX Security: Another example showing secure form usage
+class SearchForm(forms.Form):
+    """Secure search form that prevents SQL injection"""
+    query = forms.CharField(
+        max_length=100,
+        required=False,
+        label='Search',
+        widget=forms.TextInput(attrs={'placeholder': 'Search safely...'})
+    )
+    
+    def clean_query(self):
+        """Sanitize search query"""
+        query = self.cleaned_data['query']
+        # Remove potentially dangerous characters
+        dangerous = ["'", '"', ';', '--', '/*', '*/']
+        for char in dangerous:
+            query = query.replace(char, '')
+        return query.strip()
