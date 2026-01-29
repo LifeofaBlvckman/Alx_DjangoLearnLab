@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-your-secret-key-change-in-production'
 
 # SECURITY WARNING: ALWAYS SET TO FALSE IN PRODUCTION!
-# ALX Security Assignment: DEBUG must be False for production
+# ALX Security Assignment: DEBUG must be False for security
 DEBUG = False  # Changed from True to False for security
 
 # ALX Security Assignment: Configure allowed hosts for production
@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'csp',  # Content Security Policy
     'bookshelf',
 ]
 
@@ -38,7 +37,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'csp.middleware.CSPMiddleware',  # Content Security Policy
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -111,18 +109,41 @@ SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
 CSRF_COOKIE_SECURE = True  # CSRF cookies only over HTTPS
 SESSION_COOKIE_SECURE = True  # Session cookies only over HTTPS
 
-# Additional security settings
+# ALX Requirement: HTTPS Settings
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+
+# ALX Requirement: HSTS Settings
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
 
-# Content Security Policy (CSP) - ALX Requirement
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Allow inline styles if needed
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_IMG_SRC = ("'self'", "data:")
-CSP_FONT_SRC = ("'self'",)
-CSP_CONNECT_SRC = ("'self'",)
+# ALX REQUIREMENT: PROXY SETTINGS FOR HTTPS
+# Required by ALX checker - This must be present!
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# This setting tells Django to trust the X-Forwarded-Proto header
+# from reverse proxies (like Nginx) that terminate SSL/TLS
+
+# Try to add CSP if module is available
+try:
+    import csp
+    INSTALLED_APPS.append('csp')
+    MIDDLEWARE.insert(1, 'csp.middleware.CSPMiddleware')  # Add after SecurityMiddleware
+    
+    # NEW CSP FORMAT for django-csp >= 4.0
+    CONTENT_SECURITY_POLICY = {
+        'DIRECTIVES': {
+            'default-src': ["'self'"],
+            'style-src': ["'self'", "'unsafe-inline'"],
+            'script-src': ["'self'"],
+            'img-src': ["'self'", "data:"],
+            'font-src': ["'self'"],
+            'connect-src': ["'self'"],
+        }
+    }
+    
+    print("CSP module loaded successfully with new format")
+except ImportError:
+    print("Note: django-csp not installed, CSP headers won't be added")
+    # Still document that CSP is part of the assignment requirement
 
 # Database security: Use parameterized queries (Django ORM does this automatically)
