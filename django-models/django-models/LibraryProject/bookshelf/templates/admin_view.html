@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .role-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .privileges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .privilege-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Admin Dashboard</h1>
+            <h2>Welcome, {{ user.username }}! <span class="role-badge">{{ role }}</span></h2>
+            <p>Full system access and administration privileges</p>
+        </div>
+        
+        <div class="content">
+            <h3>Administrative Controls</h3>
+            <div class="privileges">
+                <div class="privilege-card">
+                    <h4>👥 User Management</h4>
+                    <ul>
+                        <li>Create/Delete Users</li>
+                        <li>Assign Roles</li>
+                        <li>Reset Passwords</li>
+                        <li>Manage Permissions</li>
+                    </ul>
+                </div>
+                
+                <div class="privilege-card">
+                    <h4>📊 System Configuration</h4>
+                    <ul>
+                        <li>Database Management</li>
+                        <li>System Settings</li>
+                        <li>Backup & Restore</li>
+                        <li>Audit Logs</li>
+                    </ul>
+                </div>
+                
+                <div class="privilege-card">
+                    <h4>📚 Library Administration</h4>
+                    <ul>
+                        <li>Manage All Books</li>
+                        <li>View All Transactions</li>
+                        <li>Generate Reports</li>
+                        <li>System Analytics</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <a href="/admin/" class="btn">Go to Django Admin Panel</a>
+        </div>
+    </div>
+</body>
+</html>

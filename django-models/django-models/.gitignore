@@ -1,0 +1,10 @@
+# Django
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+db.sqlite3
+
+# Python
+*.py[cod]
+*$py.class
