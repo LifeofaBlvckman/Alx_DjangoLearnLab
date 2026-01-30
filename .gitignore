@@ -1,16 +1,77 @@
-# Python
-*.pyc
-__pycache__/
-
-# Django migrations (except __init__.py)
-*/migrations/*.py
-!*/migrations/__init__.py
-
 # Django
+*.pyc
+*__pycache__/
 db.sqlite3
 *.log
-/staticfiles/
-media/
+local_settings.py
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Virtual environment
 venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Project specific (from existing assignments)
+advanced_features_and_security/LibraryProject/settings.py
+advanced_features_and_security/LibraryProject/settings_minimal.py
+advanced_features_and_security/config/settings.py
+django-models/
+Introduction_to_Django/LibraryProject/LibraryProject/settings.py
+Introduction_to_Django/LibraryProject/LibraryProject/settings.py.backup
+LibraryProject/LibraryProject/settings.py
+LibraryProject/LibraryProject/settings.py.backup
+advanced_features_and_security_backup/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Media
+media/
+
+# Static files collected
+staticfiles/
+
+# Database migrations (optional - be careful with this)
+# !/api/migrations/
+# !/api/migrations/__init__.py
