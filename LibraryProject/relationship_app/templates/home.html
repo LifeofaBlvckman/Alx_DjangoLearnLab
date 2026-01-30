@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Django RBAC{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4">Django Role-Based Access Control</h1>
+    <p class="lead">Implementation of RBAC with Admin, Librarian, and Member roles</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card border-danger h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">👑 Admin</h5>
+            </div>
+            <div class="card-body">
+                <p>Full system access and administration privileges.</p>
+                <ul>
+                    <li>Manage all users</li>
+                    <li>System configuration</li>
+                    <li>Access all features</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card border-primary h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📚 Librarian</h5>
+            </div>
+            <div class="card-body">
+                <p>Library management and operational access.</p>
+                <ul>
+                    <li>Manage book catalog</li>
+                    <li>Process loans & returns</li>
+                    <li>Handle reservations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card border-success h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">👤 Member</h5>
+            </div>
+            <div class="card-body">
+                <p>Basic library access and personal features.</p>
+                <ul>
+                    <li>Browse books</li>
+                    <li>Borrow books</li>
+                    <li>View history</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5>How to Test:</h5>
+        <ol>
+            <li>Login with different user accounts</li>
+            <li>Each role will see different dashboard options</li>
+            <li>Access control is enforced via decorators</li>
+            <li>Try accessing role-specific URLs directly</li>
+        </ol>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Login to Test</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

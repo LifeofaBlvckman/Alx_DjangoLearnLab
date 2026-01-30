@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+</head>
+<body>
+    <h1>Add New Book</h1>
+    
+    <!-- ALX Security: Form with CSRF token protection -->
+    <form method="POST">
+        {% csrf_token %}  <!-- REQUIRED FOR CSRF PROTECTION -->
+        
+        {{ form.as_p }}
+        
+        <button type="submit">Add Book</button>
+    </form>
+    
+    <p><strong>Security Note:</strong> This form includes CSRF token protection.</p>
+    <p>Without the {% verbatim %}{% csrf_token %}{% endverbatim %} tag, this form would be vulnerable to CSRF attacks.</p>
+    
+    <a href="{% url 'book_list' %}">Back to Book List</a>
+</body>
+</html>

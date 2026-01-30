@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - Book List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .book { border: 1px solid #ddd; padding: 20px; margin: 10px 0; }
+        .search-form { margin: 20px 0; }
+        .danger { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Library Book List</h1>
+    
+    <!-- ALX Security: Search form with proper method -->
+    <div class="search-form">
+        <form method="GET" action="{% url 'book_list' %}">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search books...">
+            <button type="submit">Search</button>
+        </form>
+        <p><small>Search is safe from SQL injection using Django ORM</small></p>
+    </div>
+    
+    <a href="{% url 'add_book' %}">Add New Book</a>
+    
+    <hr>
+    
+    {% for book in books %}
+        <div class="book">
+            <h2>{{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Published:</strong> {{ book.published_date }}</p>
+            <p>{{ book.description|truncatewords:50 }}</p>
+            <a href="{% url 'book_detail' book.pk %}">View Details</a>
+        </div>
+    {% empty %}
+        <p>No books found.</p>
+    {% endfor %}
+    
+    <!-- ALX Security: Security information in template -->
+    <div style="margin-top: 40px; padding: 20px; background: #f0f0f0;">
+        <h3>Security Features Implemented:</h3>
+        <ul>
+            <li>✅ CSRF protection (see form templates)</li>
+            <li>✅ SQL injection prevention (Django ORM)</li>
+            <li>✅ XSS protection (template auto-escaping)</li>
+            <li>✅ Content Security Policy (CSP headers)</li>
+            <li>✅ Secure cookie settings</li>
+        </ul>
+    </div>
+</body>
+</html>

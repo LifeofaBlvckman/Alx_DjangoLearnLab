@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Librarian Dashboard{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="display-5">📚 Librarian Dashboard</h1>
+    <div class="alert alert-primary">
+        <h4 class="alert-heading">Librarian Access Level</h4>
+        <p>You have access to library management functions.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Library Operations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">📖 Add New Books to Catalog</li>
+                    <li class="list-group-item">🔄 Process Book Loans</li>
+                    <li class="list-group-item">⏰ Handle Book Returns</li>
+                    <li class="list-group-item">📋 Manage Reservations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Today's Tasks</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary">Check In Books</button>
+                    <button class="btn btn-outline-primary">Check Out Books</button>
+                    <button class="btn btn-outline-primary">View Overdue Items</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5>Librarian Information:</h5>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Role:</strong> <span class="badge bg-primary">{{ role }}</span></p>
+        <p><strong>Permissions:</strong> Library Management Only</p>
+    </div>
+</div>
+{% endblock %}

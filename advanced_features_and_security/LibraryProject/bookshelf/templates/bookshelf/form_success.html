@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submitted Successfully</title>
+</head>
+<body>
+    <h1>Form Submitted Successfully!</h1>
+    
+    <div class="success">
+        <p>Thank you, {{ name }}! Your message has been received securely.</p>
+        <p>All data was validated and sanitized before processing.</p>
+    </div>
+    
+    <h3>Security Features Demonstrated:</h3>
+    <ul>
+        <li>✅ CSRF Token Validation</li>
+        <li>✅ Input Sanitization</li>
+        <li>✅ XSS Prevention</li>
+        <li>✅ Secure Form Handling</li>
+    </ul>
+    
+    <p><a href="{% url 'bookshelf:example_form' %}">Submit another message</a></p>
+    <p><a href="{% url 'bookshelf:book_list' %}">Back to Book List</a></p>
+</body>
+</html>

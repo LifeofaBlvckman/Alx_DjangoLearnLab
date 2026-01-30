@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Django
 *.pyc
 *__pycache__/
@@ -33,3 +34,21 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
+=======
+# Python
+*.pyc
+__pycache__/
+
+# Django migrations (except __init__.py)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Django
+db.sqlite3
+*.log
+/staticfiles/
+media/
+
+# Virtual environment
+venv/
+>>>>>>> 674dd52ce32cb7456b032811f6e6fb244ddd847a

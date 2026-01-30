@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #27ae60; color: white; padding: 20px; border-radius: 5px; }
+        .content { background: #ecf0f1; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        .role-badge { 
+            background: #229954; 
+            color: white; 
+            padding: 5px 10px; 
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        .member-features { 
+            background: white; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-left: 4px solid #27ae60;
+        }
+        .book-list { list-style: none; padding: 0; }
+        .book-item { 
+            background: #f8f9fa; 
+            margin: 5px 0; 
+            padding: 10px; 
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Member Dashboard</h1>
+        <p>Welcome, {{ user.username }}! <span class="role-badge">{{ role }}</span></p>
+    </div>
+    
+    <div class="content">
+        <h2>Member Services</h2>
+        
+        <div class="member-features">
+            <h3>🔍 Browse & Search</h3>
+            <ul>
+                <li>Search the library catalog</li>
+                <li>Browse books by category or author</li>
+                <li>View new arrivals and popular titles</li>
+                <li>Read book reviews and ratings</li>
+            </ul>
+        </div>
+        
+        <div class="member-features">
+            <h3>📖 Borrowing Services</h3>
+            <ul>
+                <li>Check out books (up to 5 at a time)</li>
+                <li>Reserve books that are currently checked out</li>
+                <li>Renew borrowed books (up to 2 times)</li>
+                <li>View your borrowing history</li>
+            </ul>
+        </div>
+        
+        <div class="member-features">
+            <h3>⭐ Your Account</h3>
+            <ul>
+                <li>View currently borrowed books</li>
+                <li>Check due dates and any fines</li>
+                <li>Update your contact information</li>
+                <li>Manage reading preferences</li>
+            </ul>
+        </div>
+        
+        <div class="member-features">
+            <h3>📚 Recommended For You</h3>
+            <ul class="book-list">
+                <li class="book-item">"To Kill a Mockingbird" by Harper Lee</li>
+                <li class="book-item">"1984" by George Orwell</li>
+                <li class="book-item">"The Great Gatsby" by F. Scott Fitzgerald</li>
+                <li class="book-item">"Pride and Prejudice" by Jane Austen</li>
+            </ul>
+        </div>
+        
+        <p><a href="/users/dashboard/">Back to Dashboard</a></p>
+    </div>
+</body>
+</html>

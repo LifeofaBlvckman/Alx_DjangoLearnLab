@@ -1,0 +1,99 @@
+# Query samples for relationship_app
+# These are example queries that demonstrate how to use the models
+
+from .models import Author, Book, Library, Librarian
+
+# Example 1: Get a library by name
+def get_library_by_name(library_name):
+    """
+    Get a library by its name.
+    """
+    try:
+        library = Library.objects.get(name=library_name)
+        return library
+    except Library.DoesNotExist:
+        return None
+
+# Example 2: Get all books by an author
+def get_books_by_author(author_name):
+    """
+    Get all books written by a specific author.
+    """
+    try:
+        author = Author.objects.get(name=author_name)
+        books = Book.objects.filter(author=author)
+        return books
+    except Author.DoesNotExist:
+        return Book.objects.none()
+
+# Example 3: Get all libraries that have a specific book
+def get_libraries_with_book(book_title):
+    """
+    Get all libraries that contain a specific book.
+    """
+    try:
+        book = Book.objects.get(title=book_title)
+        libraries = Library.objects.filter(books=book)
+        return libraries
+    except Book.DoesNotExist:
+        return Library.objects.none()
+
+# Example 4: Get librarian for a library
+def get_librarian_for_library(library_name):
+    """
+    Get the librarian for a specific library.
+    """
+    try:
+        library = Library.objects.get(name=library_name)
+        librarian = Librarian.objects.get(library=library)
+        return librarian
+    except (Library.DoesNotExist, Librarian.DoesNotExist):
+        return None
+
+# Example 5: Get all authors with their book count
+def get_authors_with_book_count():
+    """
+    Get all authors with the count of books they've written.
+    """
+    authors = Author.objects.all()
+    result = []
+    for author in authors:
+        book_count = author.books.count()
+        result.append({
+            'author': author.name,
+            'book_count': book_count
+        })
+    return result
+
+# Example 6: Get all books with publication year after a certain year
+def get_books_after_year(year):
+    """
+    Get all books published after a specific year.
+    """
+    books = Book.objects.filter(publication_year__gt=year)
+    return books
+
+# Example 7: Get libraries sorted by number of books
+def get_libraries_sorted_by_book_count():
+    """
+    Get libraries sorted by the number of books they have.
+    """
+    libraries = Library.objects.all()
+    sorted_libraries = sorted(
+        libraries, 
+        key=lambda lib: lib.books.count(), 
+        reverse=True
+    )
+    return sorted_libraries
+
+# Example 8: Complex query with multiple filters
+def get_books_by_author_after_year(author_name, year):
+    """
+    Get books by a specific author published after a certain year.
+    """
+    try:
+        author = Author.objects.get(name=author_name)
+        books = Book.objects.filter(author=author, publication_year__gt=year)
+        return books
+    except Author.DoesNotExist:
+        return Book.objects.none()

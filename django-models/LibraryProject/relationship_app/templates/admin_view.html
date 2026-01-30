@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="display-5">👑 Admin Dashboard</h1>
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Administrator Access Level</h4>
+        <p>You have full system access and administrative privileges.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">System Management</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">📊 View System Statistics</li>
+                    <li class="list-group-item">👥 Manage All Users</li>
+                    <li class="list-group-item">⚙️ Configure System Settings</li>
+                    <li class="list-group-item">📜 Access Audit Logs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-danger">Manage Users</button>
+                    <button class="btn btn-outline-danger">Generate Reports</button>
+                    <button class="btn btn-outline-danger">System Configuration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5>User Information:</h5>
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Role:</strong> <span class="badge bg-danger">{{ role }}</span></p>
+        <p><strong>User ID:</strong> {{ user.id }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+</div>
+{% endblock %}
