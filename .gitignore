@@ -1,9 +1,9 @@
-<<<<<<< HEAD
 # Django
 *.pyc
 *__pycache__/
 db.sqlite3
 *.log
+local_settings.py
 
 # Environment variables
 .env
@@ -20,35 +20,58 @@ db.sqlite3
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Virtual environment
 venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
 # Coverage
 .coverage
 htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Project specific (from existing assignments)
+advanced_features_and_security/LibraryProject/settings.py
+advanced_features_and_security/LibraryProject/settings_minimal.py
+advanced_features_and_security/config/settings.py
+django-models/
+Introduction_to_Django/LibraryProject/LibraryProject/settings.py
+Introduction_to_Django/LibraryProject/LibraryProject/settings.py.backup
+LibraryProject/LibraryProject/settings.py
+LibraryProject/LibraryProject/settings.py.backup
+advanced_features_and_security_backup/
 
 # Temporary files
 *.tmp
 *.temp
-=======
-# Python
-*.pyc
-__pycache__/
+*~
 
-# Django migrations (except __init__.py)
-*/migrations/*.py
-!*/migrations/__init__.py
-
-# Django
-db.sqlite3
+# Logs
+logs/
 *.log
-/staticfiles/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Media
 media/
 
-# Virtual environment
-venv/
->>>>>>> 674dd52ce32cb7456b032811f6e6fb244ddd847a
+# Static files collected
+staticfiles/
+
+# Database migrations (optional - be careful with this)
+# !/api/migrations/
+# !/api/migrations/__init__.py
