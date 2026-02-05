@@ -1,87 +1,100 @@
 """
 Views for the API application.
-
-This module provides API endpoints for the Author and Book models
-using Django REST Framework's generic views for common operations.
+Custom views using Django REST Framework generic views.
 """
 
-from rest_framework import generics
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
-from .models import Author, Book
-from .serializers import AuthorSerializer, BookSerializer
-
+from rest_framework.decorators import api_view, permission_classes
+from .models import Book, Author
+from .serializers import BookSerializer, AuthorSerializer
 
 @api_view(['GET'])
+@permission_classes([permissions.AllowAny])
 def api_root(request):
-    """
-    API root endpoint that provides links to available endpoints.
-    
-    Args:
-        request: The HTTP request
-        
-    Returns:
-        Response: JSON with available API endpoints
-    """
     return Response({
-        'authors': request.build_absolute_uri('authors/'),
-        'books': request.build_absolute_uri('books/'),
-        'message': 'Welcome to the Advanced API Project'
+        'message': 'Advanced API Project',
+        'endpoints': {
+            'books': request.build_absolute_uri('books/'),
+            'books_create': request.build_absolute_uri('books/create/'),
+        }
     })
 
+# 1. ListView - for retrieving all books
+class ListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'author__name']
 
+# 2. DetailView - for retrieving a single book by ID
+class DetailView(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
+
+# 3. CreateView - for adding a new book
+class CreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {'message': 'Book created', 'book': serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+
+# 4. UpdateView - for modifying an existing book
+class UpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(
+            {'message': 'Book updated', 'book': serializer.data},
+            status=status.HTTP_200_OK
+        )
+
+# 5. DeleteView - for removing a book
+class DeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            {'message': 'Book deleted'},
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+# Keep Author views for completeness
 class AuthorListCreate(generics.ListCreateAPIView):
-    """
-    List all authors or create a new author.
-    
-    This view handles:
-        - GET /api/authors/: Returns a list of all authors with their books
-        - POST /api/authors/: Creates a new author
-    
-    Uses AuthorSerializer which includes nested book serialization.
-    """
-    queryset = Author.objects.all().prefetch_related('books')
+    queryset = Author.objects.all()
     serializer_class = AuthorSerializer
-
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
 class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update, or delete an author instance.
-    
-    This view handles:
-        - GET /api/authors/<id>/: Get a specific author
-        - PUT /api/authors/<id>/: Update an author
-        - PATCH /api/authors/<id>/: Partially update an author
-        - DELETE /api/authors/<id>/: Delete an author
-    """
-    queryset = Author.objects.all().prefetch_related('books')
+    queryset = Author.objects.all()
     serializer_class = AuthorSerializer
-
-
-class BookListCreate(generics.ListCreateAPIView):
-    """
-    List all books or create a new book.
     
-    This view handles:
-        - GET /api/books/: Returns a list of all books
-        - POST /api/books/: Creates a new book (with validation)
-    
-    Uses BookSerializer which includes custom validation for publication_year.
-    """
-    queryset = Book.objects.all().select_related('author')
-    serializer_class = BookSerializer
-
-
-class BookDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update, or delete a book instance.
-    
-    This view handles:
-        - GET /api/books/<id>/: Get a specific book
-        - PUT /api/books/<id>/: Update a book
-        - PATCH /api/books/<id>/: Partially update a book
-        - DELETE /api/books/<id>/: Delete a book
-    """
-    queryset = Book.objects.all().select_related('author')
-    serializer_class = BookSerializer
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
