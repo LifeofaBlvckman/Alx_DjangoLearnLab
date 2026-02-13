@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     # Blog CRUD URLs
-    path('', views.PostListView.as_view(), name='post-list'),
+    path('', views.PostListView.as_view(), name='home'),
+    path('posts/', views.PostListView.as_view(), name='post-list'),  # Add this line
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
     path('post/new/', views.PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post-update'),
