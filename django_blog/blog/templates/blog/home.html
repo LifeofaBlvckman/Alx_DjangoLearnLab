@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Home - Django Blog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome to Django Blog</h1>
+    <p>Your blog is successfully set up!</p>
+    
+    <h2>Recent Posts</h2>
+    {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+                <article class="post-card">
+                    <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+                    <p class="post-meta">
+                        By {{ post.author.username }} | {{ post.published_date|date:"F d, Y" }}
+                    </p>
+                    <p>{{ post.content|truncatewords:30 }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No posts yet. <a href="/admin">Create your first post</a> in the admin panel.</p>
+    {% endif %}
+</div>
+{% endblock %}
