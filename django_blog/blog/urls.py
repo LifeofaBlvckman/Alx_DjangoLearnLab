@@ -2,9 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Blog URLs
-    path('', views.home, name='blog-home'),
-    path('post/<int:pk>/', views.post_detail, name='post-detail'),
+    # Blog CRUD URLs
+    path('', views.PostListView.as_view(), name='post-list'),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
+    path('post/new/', views.PostCreateView.as_view(), name='post-create'),
+    path('post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
     
     # Authentication URLs
     path('register/', views.register_view, name='register'),

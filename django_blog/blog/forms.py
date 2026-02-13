@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
+from .models import Post
 
 class RegisterForm(UserCreationForm):
     """
@@ -29,15 +30,11 @@ class RegisterForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
-        # Add Bootstrap classes to fields
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Username'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Password'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm Password'})
     
     def clean_email(self):
-        """
-        Validate that email is unique
-        """
         email = self.cleaned_data.get('email')
         if email and User.objects.filter(email=email).exists():
             raise ValidationError("A user with this email already exists.")
@@ -64,12 +61,50 @@ class UserUpdateForm(forms.ModelForm):
         }
     
     def clean_email(self):
-        """
-        Validate email is unique (excluding current user)
-        """
         email = self.cleaned_data.get('email')
         if email:
-            # Check if email exists for other users
             if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
                 raise ValidationError("A user with this email already exists.")
         return email
+
+
+class PostForm(forms.ModelForm):
+    """
+    Form for creating and updating blog posts
+    """
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter post title'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your post content here...',
+                'rows': 10
+            }),
+        }
+        labels = {
+            'title': 'Post Title',
+            'content': 'Post Content',
+        }
+    
+    def clean_title(self):
+        """
+        Custom validation for title
+        """
+        title = self.cleaned_data.get('title')
+        if len(title) < 5:
+            raise ValidationError("Title must be at least 5 characters long.")
+        return title
+    
+    def clean_content(self):
+        """
+        Custom validation for content
+        """
+        content = self.cleaned_data.get('content')
+        if len(content) < 10:
+            raise ValidationError("Content must be at least 10 characters long.")
+        return content
