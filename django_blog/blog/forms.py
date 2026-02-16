@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from .models import Post
+from taggit.forms import TagField, TagWidget  # Add these imports
+from .models import Post, Comment
 
 class RegisterForm(UserCreationForm):
     """
@@ -70,11 +71,20 @@ class UserUpdateForm(forms.ModelForm):
 
 class PostForm(forms.ModelForm):
     """
-    Form for creating and updating blog posts
+    Form for creating and updating blog posts with tags
     """
+    tags = TagField(
+        required=False,
+        widget=TagWidget(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter tags separated by commas (e.g., python, django, tutorial)'
+        }),
+        help_text="Separate tags with commas"
+    )
+    
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -89,22 +99,61 @@ class PostForm(forms.ModelForm):
         labels = {
             'title': 'Post Title',
             'content': 'Post Content',
+            'tags': 'Tags',
         }
     
     def clean_title(self):
-        """
-        Custom validation for title
-        """
         title = self.cleaned_data.get('title')
         if len(title) < 5:
             raise ValidationError("Title must be at least 5 characters long.")
         return title
     
     def clean_content(self):
-        """
-        Custom validation for content
-        """
         content = self.cleaned_data.get('content')
         if len(content) < 10:
             raise ValidationError("Content must be at least 10 characters long.")
         return content
+
+
+class CommentForm(forms.ModelForm):
+    """
+    Form for creating and updating comments
+    """
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your comment here...',
+                'rows': 3
+            }),
+        }
+        labels = {
+            'content': '',
+        }
+    
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if len(content.strip()) < 2:
+            raise ValidationError("Comment must be at least 2 characters long.")
+        if len(content) > 1000:
+            raise ValidationError("Comment must be less than 1000 characters.")
+        return content
+
+
+class SearchForm(forms.Form):
+    """
+    Form for searching posts
+    """
+    query = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search posts by title, content, or tags...'
+        })
+    )
+    
+    def clean_query(self):
+        query = self.cleaned_data.get('query', '').strip()
+        return query

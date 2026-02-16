@@ -124,3 +124,7 @@ MESSAGE_TAGS = {
     messages.INFO: 'info',
     messages.WARNING: 'warning',
 }
+
+# django-taggit settings
+INSTALLED_APPS += ['taggit']
+TAGGIT_CASE_INSENSITIVE = True

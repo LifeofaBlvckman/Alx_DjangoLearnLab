@@ -254,3 +254,93 @@ footer p {
 .mt-3 {
     margin-top: 1rem !important;
 }
+
+/* Comment Styles */
+.comments-section {
+    margin-top: 2rem;
+}
+
+.comment {
+    border-left: 3px solid #007bff;
+    transition: background-color 0.2s;
+}
+
+.comment:hover {
+    background-color: #f1f3f5 !important;
+}
+
+.comment-header {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment-actions {
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.comment-actions:hover {
+    opacity: 1;
+}
+
+.comment-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.comment-content p:last-child {
+    margin-bottom: 0;
+}
+
+.comment-form {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Tag Styles */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: white;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.badge-info:hover {
+    background-color: #138496;
+    color: white;
+    transform: scale(1.05);
+}
+
+.badge-primary {
+    background-color: #007bff !important;
+}
+
+/* Search Form */
+.form-inline .form-control {
+    width: 250px;
+}
+
+@media (max-width: 768px) {
+    .form-inline .form-control {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

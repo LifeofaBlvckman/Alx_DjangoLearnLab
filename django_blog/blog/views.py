@@ -8,8 +8,13 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
-from .models import Post, Comment  # Added Comment here!
-from .forms import RegisterForm, UserUpdateForm, PostForm, CommentForm  # Added CommentForm
+from django.db.models import Q
+from taggit.models import Tag
+from .models import Post, Comment
+from .forms import (
+    RegisterForm, UserUpdateForm, PostForm, 
+    CommentForm, SearchForm
+)
 
 # ========== AUTHENTICATION VIEWS ==========
 
@@ -96,6 +101,8 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Blog Posts'
+        context['search_form'] = SearchForm()
+        context['all_tags'] = Tag.objects.all().order_by('name')  # Get all tags for sidebar
         return context
 
 
@@ -111,6 +118,7 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.title
         context['comment_form'] = CommentForm()
+        context['all_tags'] = Tag.objects.all().order_by('name')
         return context
 
 
@@ -266,3 +274,54 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         """
         comment = self.get_object()
         return self.request.user == comment.author
+
+
+# ========== SEARCH AND TAG VIEWS ==========
+
+class SearchResultsView(ListView):
+    """
+    Display search results
+    """
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+    
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            # Search in title, content, and tags
+            return Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query)
+            ).distinct().order_by('-published_date')
+        return Post.objects.none()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+        context['title'] = f"Search Results for '{context['query']}'"
+        context['all_tags'] = Tag.objects.all().order_by('name')
+        return context
+
+
+class TaggedPostsView(ListView):
+    """
+    Display posts filtered by tag
+    """
+    model = Post
+    template_name = 'blog/tagged_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+    
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return Post.objects.filter(tags__in=[self.tag]).distinct().order_by('-published_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag
+        context['title'] = f"Posts tagged with '{self.tag.name}'"
+        context['all_tags'] = Tag.objects.all().order_by('name')
+        return context
