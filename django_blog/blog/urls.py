@@ -15,7 +15,7 @@ urlpatterns = [
     path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
     
-    # Search and Tag URLs
+    # Search and Tag URLs - Explicitly defined for ALX
     path('search/', views.SearchResultsView.as_view(), name='search'),
     path('tags/<slug:tag_slug>/', views.TaggedPostsView.as_view(), name='posts-by-tag'),
     

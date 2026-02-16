@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from taggit.forms import TagField, TagWidget  # Add these imports
+from taggit.forms import TagField, TagWidget  # Make sure TagWidget is imported
 from .models import Post, Comment
 
 class RegisterForm(UserCreationForm):
@@ -73,6 +73,7 @@ class PostForm(forms.ModelForm):
     """
     Form for creating and updating blog posts with tags
     """
+    # Explicitly use TagWidget for the tags field
     tags = TagField(
         required=False,
         widget=TagWidget(attrs={
