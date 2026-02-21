@@ -140,3 +140,6 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
 }
+
+# Add notifications app
+INSTALLED_APPS += ['notifications']

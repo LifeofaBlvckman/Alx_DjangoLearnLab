@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from notifications.models import Notification
 from .serializers import (
     UserRegistrationSerializer, UserLoginSerializer,
     UserProfileSerializer, UserDetailSerializer
@@ -12,7 +13,8 @@ from .models import CustomUser
 
 User = get_user_model()
 
-class RegistrationView(generics.GenericAPIView, generics.CreateAPIView):
+# Fixed: Don't inherit from both - CreateAPIView already includes GenericAPIView
+class RegistrationView(generics.CreateAPIView):
     """
     Register a new user and return token
     """
@@ -20,7 +22,7 @@ class RegistrationView(generics.GenericAPIView, generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
     
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -63,7 +65,8 @@ def logout_view(request):
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
-class ProfileView(generics.GenericAPIView, generics.RetrieveUpdateAPIView):
+# Fixed: Use RetrieveUpdateAPIView which already includes GenericAPIView
+class ProfileView(generics.RetrieveUpdateAPIView):
     """
     Get or update user profile
     """
@@ -72,18 +75,10 @@ class ProfileView(generics.GenericAPIView, generics.RetrieveUpdateAPIView):
     
     def get_object(self):
         return self.request.user
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-    
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-    
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
 
-class UserDetailView(generics.GenericAPIView, generics.RetrieveAPIView):
+# Fixed: Use RetrieveAPIView which already includes GenericAPIView
+class UserDetailView(generics.RetrieveAPIView):
     """
     View another user's profile
     """
@@ -91,16 +86,13 @@ class UserDetailView(generics.GenericAPIView, generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'id'
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def follow_user(request, user_id):
     """
-    Follow a user
+    Follow a user and create notification
     """
     user_to_follow = get_object_or_404(CustomUser, id=user_id)
     
@@ -117,6 +109,12 @@ def follow_user(request, user_id):
         )
     
     request.user.following.add(user_to_follow)
+    
+    # Create notification for the user being followed
+    Notification.create_follow_notification(
+        actor=request.user,
+        recipient=user_to_follow
+    )
     
     return Response({
         'message': f'You are now following {user_to_follow.username}',
@@ -154,7 +152,8 @@ def unfollow_user(request, user_id):
     }, status=status.HTTP_200_OK)
 
 
-class FollowersListView(generics.GenericAPIView, generics.ListAPIView):
+# Fixed: Use ListAPIView which already includes GenericAPIView
+class FollowersListView(generics.ListAPIView):
     """
     List users who follow the specified user
     """
@@ -165,16 +164,14 @@ class FollowersListView(generics.GenericAPIView, generics.ListAPIView):
         user = get_object_or_404(CustomUser, id=self.kwargs['user_id'])
         return user.followers.all()
     
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
 
 
-class FollowingListView(generics.GenericAPIView, generics.ListAPIView):
+# Fixed: Use ListAPIView which already includes GenericAPIView
+class FollowingListView(generics.ListAPIView):
     """
     List users that the specified user follows
     """
@@ -185,16 +182,14 @@ class FollowingListView(generics.GenericAPIView, generics.ListAPIView):
         user = get_object_or_404(CustomUser, id=self.kwargs['user_id'])
         return user.following.all()
     
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
 
 
-class UserSearchView(generics.GenericAPIView, generics.ListAPIView):
+# Fixed: Use ListAPIView which already includes GenericAPIView
+class UserSearchView(generics.ListAPIView):
     """
     Search for users by username
     """
@@ -206,9 +201,6 @@ class UserSearchView(generics.GenericAPIView, generics.ListAPIView):
         if query:
             return CustomUser.objects.filter(username__icontains=query)
         return CustomUser.objects.none()
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
     
     def get_serializer_context(self):
         context = super().get_serializer_context()

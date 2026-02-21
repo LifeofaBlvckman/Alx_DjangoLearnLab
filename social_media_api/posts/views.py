@@ -3,10 +3,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
-from .models import Post, Comment
+from django.shortcuts import get_object_or_404
+from notifications.models import Notification
+from .models import Post, Comment, Like
 from .serializers import (
     PostSerializer, PostCreateUpdateSerializer,
-    CommentSerializer, CommentCreateUpdateSerializer
+    CommentSerializer, CommentCreateUpdateSerializer,
+    LikeSerializer
 )
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
@@ -50,7 +53,7 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def add_comment(self, request, pk=None):
         """
-        Add a comment to a post
+        Add a comment to a post and create notification
         """
         post = self.get_object()
         serializer = CommentCreateUpdateSerializer(data=request.data)
@@ -61,11 +64,75 @@ class PostViewSet(viewsets.ModelViewSet):
                 author=request.user,
                 content=serializer.validated_data['content']
             )
+            
+            # Create notification for post author (if not self-comment)
+            if post.author != request.user:
+                Notification.create_comment_notification(
+                    actor=request.user,
+                    recipient=post.author,
+                    target=post
+                )
+            
             return Response(
                 CommentSerializer(comment, context={'request': request}).data,
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['post'])
+    def like(self, request, pk=None):
+        """
+        Like a post and create notification
+        """
+        post = self.get_object()
+        user = request.user
+        
+        # Check if already liked
+        like, created = Like.objects.get_or_create(user=user, post=post)
+        
+        if created:
+            # Create notification for post author (if not self-like)
+            if post.author != user:
+                Notification.create_like_notification(
+                    actor=user,
+                    recipient=post.author,
+                    target=post
+                )
+            
+            return Response({
+                'message': 'Post liked successfully',
+                'likes_count': post.likes.count()
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response({
+                'message': 'You already liked this post'
+            }, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['post'])
+    def unlike(self, request, pk=None):
+        """
+        Unlike a post
+        """
+        post = self.get_object()
+        user = request.user
+        
+        like = get_object_or_404(Like, user=user, post=post)
+        like.delete()
+        
+        return Response({
+            'message': 'Post unliked successfully',
+            'likes_count': post.likes.count()
+        }, status=status.HTTP_200_OK)
+    
+    @action(detail=True, methods=['get'])
+    def likes(self, request, pk=None):
+        """
+        Get all users who liked this post
+        """
+        post = self.get_object()
+        likes = post.likes.all()
+        serializer = LikeSerializer(likes, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -102,7 +169,7 @@ class FeedView(generics.ListAPIView):
         user = self.request.user
         # Get all users that the current user follows
         following_users = user.following.all()
-        # EXACT FILTER ALX IS CHECKING FOR
+        # Return posts from followed users, ordered by most recent
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
 
     def get_serializer_context(self):
