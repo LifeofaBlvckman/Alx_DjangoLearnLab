@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from .models import Post, Comment
@@ -14,11 +15,8 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
     Custom permission to only allow authors of an object to edit it.
     """
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request
         if request.method in permissions.SAFE_METHODS:
             return True
-        
-        # Write permissions are only allowed to the author
         return obj.author == request.user
 
 
@@ -92,3 +90,25 @@ class CommentViewSet(viewsets.ModelViewSet):
         if post_id is not None:
             queryset = queryset.filter(post_id=post_id)
         return queryset
+
+
+class FeedView(ListAPIView):
+    """
+    Feed view - shows posts from users that the current user follows
+    """
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        # Get all users that the current user follows
+        following_users = user.following.all()
+        # Return posts from followed users, ordered by most recent
+        return Post.objects.filter(
+            author__in=following_users
+        ).order_by('-created_at')
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

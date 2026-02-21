@@ -9,10 +9,12 @@ class CommentSerializer(serializers.ModelSerializer):
     Serializer for Comment model
     """
     author_username = serializers.ReadOnlyField(source='author.username')
+    author_profile_picture = serializers.ImageField(source='author.profile_picture', read_only=True)
     
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'author', 'author_username', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'post', 'author', 'author_username', 'author_profile_picture', 
+                  'content', 'created_at', 'updated_at']
         read_only_fields = ['id', 'author', 'created_at', 'updated_at']
 
 
@@ -21,13 +23,15 @@ class PostSerializer(serializers.ModelSerializer):
     Serializer for Post model
     """
     author_username = serializers.ReadOnlyField(source='author.username')
+    author_profile_picture = serializers.ImageField(source='author.profile_picture', read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     comments_count = serializers.IntegerField(source='comments.count', read_only=True)
     
     class Meta:
         model = Post
-        fields = ['id', 'author', 'author_username', 'title', 'content', 
-                  'created_at', 'updated_at', 'comments', 'comments_count']
+        fields = ['id', 'author', 'author_username', 'author_profile_picture', 
+                  'title', 'content', 'created_at', 'updated_at', 
+                  'comments', 'comments_count']
         read_only_fields = ['id', 'author', 'created_at', 'updated_at']
 
 

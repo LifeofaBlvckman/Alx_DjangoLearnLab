@@ -7,10 +7,10 @@ class CustomUser(AbstractUser):
     """
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
-    followers = models.ManyToManyField(
+    following = models.ManyToManyField(
         'self',
         symmetrical=False,
-        related_name='following',
+        related_name='followers',
         blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,6 +26,10 @@ class CustomUser(AbstractUser):
     @property
     def following_count(self):
         return self.following.count()
+    
+    @property
+    def posts_count(self):
+        return self.posts.count()
     
     class Meta:
         ordering = ['-date_joined']
