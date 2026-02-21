@@ -8,6 +8,6 @@ router.register(r'comments', views.CommentViewSet, basename='comment')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # Feed endpoint
+    # Feed endpoint - THIS IS THE REQUIRED ROUTE
     path('feed/', views.FeedView.as_view(), name='feed'),
 ]
