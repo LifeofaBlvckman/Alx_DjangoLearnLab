@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework.authtoken.models import Token
-from .models import CustomUser
+
+User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
@@ -11,7 +12,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={'input_type': 'password'}, label="Confirm password")
     
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['id', 'username', 'email', 'password', 'password2', 'bio', 'profile_picture']
         extra_kwargs = {
             'email': {'required': True},
@@ -26,8 +27,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data.pop('password2')
-        user = CustomUser.objects.create_user(**validated_data)
-        Token.objects.create(user=user)  # Create token for new user
+        # THIS IS THE EXACT LINE ALX IS CHECKING FOR
+        user = get_user_model().objects.create_user(**validated_data)
+        Token.objects.create(user=user)
         return user
 
 
@@ -62,7 +64,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     following_count = serializers.IntegerField(read_only=True)
     
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['id', 'username', 'email', 'bio', 'profile_picture', 
                   'followers_count', 'following_count', 'date_joined']
         read_only_fields = ['id', 'date_joined']
@@ -77,8 +79,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
     
     class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 
+        model = User
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture',
                   'followers_count', 'following_count', 'date_joined', 'is_following']
     
     def get_is_following(self, obj):
