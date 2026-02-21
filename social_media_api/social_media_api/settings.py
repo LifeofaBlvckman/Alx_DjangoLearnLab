@@ -146,3 +146,6 @@ INSTALLED_APPS += ['notifications']
 
 # For debugging URLs
 INSTALLED_APPS += ['django_extensions']
+
+# Add whitenoise for static files (will be used in production)
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')

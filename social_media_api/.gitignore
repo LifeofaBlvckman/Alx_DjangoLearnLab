@@ -1,0 +1,13 @@
+
+# Production settings
+.env
+*.env
+settings_production_local.py
+
+# Static files
+staticfiles/
+media/
+
+# Database
+*.db
+*.sqlite3
