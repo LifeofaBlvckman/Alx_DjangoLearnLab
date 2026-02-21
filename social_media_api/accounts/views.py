@@ -13,7 +13,6 @@ from .models import CustomUser
 
 User = get_user_model()
 
-# Fixed: Don't inherit from both - CreateAPIView already includes GenericAPIView
 class RegistrationView(generics.CreateAPIView):
     """
     Register a new user and return token
@@ -65,7 +64,6 @@ def logout_view(request):
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
-# Fixed: Use RetrieveUpdateAPIView which already includes GenericAPIView
 class ProfileView(generics.RetrieveUpdateAPIView):
     """
     Get or update user profile
@@ -77,7 +75,6 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-# Fixed: Use RetrieveAPIView which already includes GenericAPIView
 class UserDetailView(generics.RetrieveAPIView):
     """
     View another user's profile
@@ -110,10 +107,11 @@ def follow_user(request, user_id):
     
     request.user.following.add(user_to_follow)
     
-    # Create notification for the user being followed
-    Notification.create_follow_notification(
+    # Create notification for the user being followed using Notification.objects.create
+    Notification.objects.create(
+        recipient=user_to_follow,
         actor=request.user,
-        recipient=user_to_follow
+        verb='follow'
     )
     
     return Response({
@@ -152,7 +150,6 @@ def unfollow_user(request, user_id):
     }, status=status.HTTP_200_OK)
 
 
-# Fixed: Use ListAPIView which already includes GenericAPIView
 class FollowersListView(generics.ListAPIView):
     """
     List users who follow the specified user
@@ -170,7 +167,6 @@ class FollowersListView(generics.ListAPIView):
         return context
 
 
-# Fixed: Use ListAPIView which already includes GenericAPIView
 class FollowingListView(generics.ListAPIView):
     """
     List users that the specified user follows
@@ -188,7 +184,6 @@ class FollowingListView(generics.ListAPIView):
         return context
 
 
-# Fixed: Use ListAPIView which already includes GenericAPIView
 class UserSearchView(generics.ListAPIView):
     """
     Search for users by username

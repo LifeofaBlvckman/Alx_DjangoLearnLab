@@ -67,9 +67,10 @@ class PostViewSet(viewsets.ModelViewSet):
             
             # Create notification for post author (if not self-comment)
             if post.author != request.user:
-                Notification.create_comment_notification(
-                    actor=request.user,
+                Notification.objects.create(
                     recipient=post.author,
+                    actor=request.user,
+                    verb='comment',
                     target=post
                 )
             
@@ -79,23 +80,25 @@ class PostViewSet(viewsets.ModelViewSet):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=True, methods=['post'])
-    def like(self, request, pk=None):
+    @action(detail=True, methods=['post'], url_path='like')
+    def like_post(self, request, pk=None):
         """
         Like a post and create notification
         """
-        post = self.get_object()
+        # Use get_object_or_404 as required by ALX
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
         
-        # Check if already liked
+        # Use get_or_create as required by ALX
         like, created = Like.objects.get_or_create(user=user, post=post)
         
         if created:
             # Create notification for post author (if not self-like)
             if post.author != user:
-                Notification.create_like_notification(
-                    actor=user,
+                Notification.objects.create(
                     recipient=post.author,
+                    actor=user,
+                    verb='like',
                     target=post
                 )
             
@@ -108,12 +111,13 @@ class PostViewSet(viewsets.ModelViewSet):
                 'message': 'You already liked this post'
             }, status=status.HTTP_400_BAD_REQUEST)
     
-    @action(detail=True, methods=['post'])
-    def unlike(self, request, pk=None):
+    @action(detail=True, methods=['post'], url_path='unlike')
+    def unlike_post(self, request, pk=None):
         """
         Unlike a post
         """
-        post = self.get_object()
+        # Use get_object_or_404 as required by ALX
+        post = generics.get_object_or_404(Post, pk=pk)
         user = request.user
         
         like = get_object_or_404(Like, user=user, post=post)
