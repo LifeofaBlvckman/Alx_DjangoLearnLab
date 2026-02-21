@@ -85,8 +85,8 @@ class PostViewSet(viewsets.ModelViewSet):
         """
         Like a post and create notification
         """
-        # Use get_object_or_404 as required by ALX
-        post = generics.get_object_or_404(Post, pk=pk)
+        # Use get_object_or_404 from django.shortcuts (not generics)
+        post = get_object_or_404(Post, pk=pk)
         user = request.user
         
         # Use get_or_create as required by ALX
@@ -116,8 +116,8 @@ class PostViewSet(viewsets.ModelViewSet):
         """
         Unlike a post
         """
-        # Use get_object_or_404 as required by ALX
-        post = generics.get_object_or_404(Post, pk=pk)
+        # Use get_object_or_404 from django.shortcuts
+        post = get_object_or_404(Post, pk=pk)
         user = request.user
         
         like = get_object_or_404(Like, user=user, post=post)

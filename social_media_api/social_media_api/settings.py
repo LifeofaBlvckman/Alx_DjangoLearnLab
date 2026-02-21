@@ -143,3 +143,6 @@ REST_FRAMEWORK = {
 
 # Add notifications app
 INSTALLED_APPS += ['notifications']
+
+# For debugging URLs
+INSTALLED_APPS += ['django_extensions']
