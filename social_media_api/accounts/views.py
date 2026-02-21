@@ -1,12 +1,9 @@
 from rest_framework import status, generics, permissions
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
 from .serializers import (
     UserRegistrationSerializer, UserLoginSerializer,
     UserProfileSerializer, UserDetailSerializer
@@ -15,7 +12,7 @@ from .models import CustomUser
 
 User = get_user_model()
 
-class RegistrationView(generics.CreateAPIView):
+class RegistrationView(generics.GenericAPIView, generics.CreateAPIView):
     """
     Register a new user and return token
     """
@@ -23,7 +20,7 @@ class RegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [permissions.AllowAny]
     
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -66,7 +63,7 @@ def logout_view(request):
     return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
+class ProfileView(generics.GenericAPIView, generics.RetrieveUpdateAPIView):
     """
     Get or update user profile
     """
@@ -75,9 +72,18 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     
     def get_object(self):
         return self.request.user
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
-class UserDetailView(generics.RetrieveAPIView):
+class UserDetailView(generics.GenericAPIView, generics.RetrieveAPIView):
     """
     View another user's profile
     """
@@ -85,6 +91,9 @@ class UserDetailView(generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'id'
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 @api_view(['POST'])
@@ -145,7 +154,7 @@ def unfollow_user(request, user_id):
     }, status=status.HTTP_200_OK)
 
 
-class FollowersListView(generics.ListAPIView):
+class FollowersListView(generics.GenericAPIView, generics.ListAPIView):
     """
     List users who follow the specified user
     """
@@ -156,13 +165,16 @@ class FollowersListView(generics.ListAPIView):
         user = get_object_or_404(CustomUser, id=self.kwargs['user_id'])
         return user.followers.all()
     
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
 
 
-class FollowingListView(generics.ListAPIView):
+class FollowingListView(generics.GenericAPIView, generics.ListAPIView):
     """
     List users that the specified user follows
     """
@@ -173,24 +185,30 @@ class FollowingListView(generics.ListAPIView):
         user = get_object_or_404(CustomUser, id=self.kwargs['user_id'])
         return user.following.all()
     
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
 
 
-class UserSearchView(generics.ListAPIView):
+class UserSearchView(generics.GenericAPIView, generics.ListAPIView):
     """
     Search for users by username
     """
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.AllowAny]
-    
+
     def get_queryset(self):
         query = self.request.query_params.get('q', '')
         if query:
             return CustomUser.objects.filter(username__icontains=query)
         return CustomUser.objects.none()
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
     
     def get_serializer_context(self):
         context = super().get_serializer_context()
