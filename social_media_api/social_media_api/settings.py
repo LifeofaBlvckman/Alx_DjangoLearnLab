@@ -8,13 +8,10 @@ import os
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here-change-in-production'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# Hardcoded production values - these WILL work
+SECRET_KEY = 'django-insecure-$ocial_M3dia_AP1_pr0duct10n_k3y_2026_!@#$%'
+DEBUG = False
+ALLOWED_HOSTS = ['social-media-api-b93m.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -28,14 +25,18 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
+    'django_extensions',
     
-    # Local apps - ADD THESE LINES
+    # Local apps
     'accounts',
     'posts',
+    'notifications',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,11 +66,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 # Database
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
 # Custom user model
@@ -100,6 +99,7 @@ USE_TZ = True
 # Static files
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
@@ -118,34 +118,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}
-
-# Add to INSTALLED_APPS
-INSTALLED_APPS += ['django_filters']
-
-# Update REST Framework settings
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
 }
-
-# Add notifications app
-INSTALLED_APPS += ['notifications']
-
-# For debugging URLs
-INSTALLED_APPS += ['django_extensions']
-
-# Add whitenoise for static files (will be used in production)
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
